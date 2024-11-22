@@ -1,0 +1,182 @@
+const UsuarioModel = require('../models/usuarios.shema')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const {registroUsuario} = require('../helpers/messages')
+
+const nuevoUsuario = async (body)=>{
+  /* bcrypt */
+  try {
+    /* chequer que el usuario este disponible */
+   const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
+   if(usuarioExiste){
+    return {
+      msg: 'Usuario no Disponible',
+      statusCode: 409
+    }
+   }
+    const usuario = new UsuarioModel(body)
+    /*Antes de crearlo y guardarlo , tenemos q hacer el hasheado  */
+    const salt =  bcrypt.genSaltSync(10);
+    usuario.password = bcrypt.hashSync(body.password, salt);
+    /* hasheado de contraseña */
+
+    registroUsuario(body.correo)
+    await usuario.save()
+    return {
+      msg:'Usuario Creado',
+      statusCode: 201
+    }
+  } catch (error) {
+    return {
+      msg: 'Error al crear el Usuario',
+      statusCode: 500,
+      error
+    }
+  }
+}
+
+
+
+const obtenerUsuarios = async ()=>{
+  try {
+    const usuarios = await UsuarioModel.find()
+    return{
+      msg: 'Usuarios Encontrados',
+      statusCode: 200,
+      usuarios
+    }
+  } catch (error) {
+    return {
+      msg: 'Usuario no encontrados',
+      statusCode: 500,
+      error
+    }
+  }
+}
+
+const obtenerUnUsuario = async (id)=>{
+  try {
+    const usuario = await UsuarioModel.findById(id)
+    return{
+      msg:'Usuario Encontrado',
+      usuario,
+      statusCode: 200
+    }
+  } catch (error) {
+    return{
+      msg: 'Error al buscar el usuario',
+      satusCode: 500,
+      error
+    }
+  }
+}
+
+const actualizarUsuario =async (id, body)=>{
+  try {
+    const usuario = await UsuarioModel.findByIdAndUpdate(id, body)
+    return{
+      msg:'Usuario Actualizado',
+      statusCode:200,
+      usuario
+    }
+  } catch (error) {
+    return {
+      msg:'Error al Actualizar el usuario',
+      statusCode:500,
+      error
+    }
+  }
+}
+
+const eliminarUsuario = async (id) => {
+  try {
+    await UsuarioModel.findByIdAndDelete(id);
+    return {
+      msg: "Usuario Eliminado",
+      statusCode: 200,
+    };
+  } catch (error) {
+    return {
+      msg: "No se pudo eliminar el usuario",
+      statusCode: 500,
+      error,
+    };
+  }
+};
+
+
+/* CREO el inicio de Sesion - JWT */
+const inicioSesion = async (body) =>{
+  try {
+    const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
+    if(!usuarioExiste){
+      return {
+        msg:'Usuario o Contraseña incorrecto USUARIO',
+        statusCode: 400
+      }
+    }
+    /* comparacion */
+    const checkPassword = bcrypt.compareSync(body.password, usuarioExiste.password)
+    if(!checkPassword){
+      return {
+        msg:'Usuario o Contraseña incorrecto PASSWORD',
+        statusCode: 400
+      }
+    }
+    /* CREAMOS EL PAULOAD */
+    const payload = {
+      idUsuario : usuarioExiste._id,
+      rol: usuarioExiste.rol
+    }
+    /* cREO EL TOKEN -  JWT*/
+    const token = jwt.sign(payload, process.env.JWT_SECRET)
+    return{
+      token,
+      rol: usuarioExiste.rol,
+      idUsuario: usuarioExiste._id,
+      msg:'Usuario Logueado',
+      statusCode: 200
+    }
+  /*token , header - payload - signature*/
+  } catch (error) {
+    return {
+      msg: 'Error interno del servidor',
+      statusCode: 500,
+      error
+    };
+  }
+  
+}
+
+const habilitarUsuario = async(idUsuario)=>{
+  const usuario =  await UsuarioModel.findById(idUsuario)
+  usuario.bloqueado = false
+  await usuario.save()
+
+  return{
+    msg:'Usuario habilitado',
+    statusCode: 200
+  }
+}
+
+const deshabilitarUsuario = async(idUsuario)=>{
+  const usuario =  await UsuarioModel.findById(idUsuario)
+  usuario.bloqueado = true
+  await usuario.save()
+
+  return{
+    msg:'Usuario deshabilitado',
+    statusCode: 200
+  }
+}
+
+module.exports = {
+  nuevoUsuario,
+  obtenerUsuarios,
+  obtenerUnUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
+  inicioSesion,
+  habilitarUsuario,
+  deshabilitarUsuario
+}

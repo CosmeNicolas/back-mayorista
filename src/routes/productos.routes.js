@@ -25,7 +25,7 @@ const router = Router();
 
 router.get("/", mostrarProductos);
 
-router.get("/:idProducto",auth('usuario'), mostrarUnProducto);
+router.get("/:idProducto",/* auth('usuario'), */ mostrarUnProducto);
 
 router.get("/obtenerFavoritoCarrito/",auth('usuario'), obtenerFavoritoUsuario)
 router.get("/obtenerProdCart",auth('usuario'),obtenerProductoCarritoUsuario)

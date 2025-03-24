@@ -37,13 +37,13 @@ const nuevoUsuario = async (body)=>{
 
 
 
-const obtenerUsuarios = async ()=>{
+const obtenerUsuarios = async()=>{
   try {
     const usuarios = await UsuarioModel.find()
     return{
       msg: 'Usuarios Encontrados',
       statusCode: 200,
-      usuarios
+      usuarios: usuarios
     }
   } catch (error) {
     return {
@@ -71,22 +71,28 @@ const obtenerUnUsuario = async (id)=>{
   }
 }
 
-const actualizarUsuario =async (id, body)=>{
+const actualizarUsuario = async (id, body) => {
   try {
-    const usuario = await UsuarioModel.findByIdAndUpdate(id, body)
-    return{
-      msg:'Usuario Actualizado',
-      statusCode:200,
-      usuario
+    const usuario = await UsuarioModel.findByIdAndUpdate(id, body, { new: true }); // Agrega { new: true }
+    if (!usuario) {
+      return {
+        msg: "Usuario no encontrado",
+        statusCode: 404,
+      };
     }
+    return {
+      msg: "Usuario Actualizado",
+      statusCode: 200,
+      usuario: usuario,
+    };
   } catch (error) {
     return {
-      msg:'Error al Actualizar el usuario',
-      statusCode:500,
-      error
-    }
+      msg: "Error al Actualizar el usuario",
+      statusCode: 500,
+      error,
+    };
   }
-}
+};
 
 const eliminarUsuario = async (id) => {
   try {

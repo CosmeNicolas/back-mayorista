@@ -25,7 +25,7 @@ router.post('/login',
     check('password', 'Campo PASSWORD VACIO').not().isEmpty(),
     check('password', 'Min: 8 y Max: 40').isLength({min:8,max:40})
   ],inicioSesion)
-router.get('/',/* auth('admin'), */ traerTodosLosUsuarios)
+router.get('/',auth('admin'), traerTodosLosUsuarios)
 router.get('/:idUsuario',/* auth('admin'), */ traerUnUsuario)
 router.put('/:idUsuario',/* auth('admin'), */ actualizarUnUsuario)
 router.put('/habilitar/:idUsuario',/* auth('admin'), */habilitarUnUsuario)

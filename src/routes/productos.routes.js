@@ -45,7 +45,10 @@ router.post(
   [
     check("nombreProducto", "El PRODUCTO no debe estar vacio").not().isEmpty(),
     check("precio", "Campo PRECIO vacio").not().isEmpty(),
-    check("descripcion", "campo DESCRIPCION vacio ").isLength({ min: 8, max: 40 }),
+    check("descripcion", "campo DESCRIPCION vacio ").isLength({
+      min: 8,
+      max: 40,
+    }),
   ],
   crearProducto
 );

@@ -2,22 +2,23 @@ const ProductoModel = require('../models/productos.shema')
 const cloudinary = require('../helpers/cloudinary')
 const UsuarioModel = require('../models/usuarios.shema')
 
-const nuevoProducto = async(body)=>{
+const nuevoProducto = async (body) => {
   try {
-   const producto =  new ProductoModel(body)
-   await producto.save()
+    const producto = new ProductoModel(body);
+    await producto.save();
     return {
-      msg: 'Producto Creado',
-      statusCode:201
-    }
+      msg: "Producto Creado",
+      statusCode: 201,
+      _id: producto._id, // Asegúrate de devolver el _id
+    };
   } catch (error) {
     return {
-      msg: 'Error al crear el producto',
-      statusCode:500,
-      error
-    }
+      msg: "Error al crear el producto",
+      statusCode: 500,
+      error,
+    };
   }
-}
+};
 
 const traerProductos = async()=>{
   try {
@@ -94,25 +95,43 @@ const eliminarUnProducto = async(idProducto) => {
 };
 
 
-/* Servicio imagen producto */
-const imagenProducto = async (idProducto, file)=>{
+const imagenProducto = async (idProducto, file) => {
   try {
-    const producto = await ProductoModel.findById(idProducto)
-    const imagen = await cloudinary.uploader.upload(file.path)
-    producto.imagen =  imagen.secure_url
-    await producto.save()
+    if (!file || !file.path) {
+      return {
+        msg: "No se ha proporcionado un archivo válido",
+        statusCode: 400,
+      };
+    }
+
+    const producto = await ProductoModel.findById(idProducto);
+    if (!producto) {
+      return {
+        msg: "Producto no encontrado",
+        statusCode: 404,
+      };
+    }
+
+    const imagen = await cloudinary.uploader.upload(file.path, {
+      folder: "productos",
+    });
+
+    producto.imagen = imagen.secure_url;
+    await producto.save();
+
     return {
-      msg: 'Imagen y producto cargado',
-      statusCode:200
-    }
+      msg: "Imagen y producto cargado",
+      statusCode: 200,
+    };
   } catch (error) {
-    return{
-      msg:'No se pudo cargar la imagen del producto',
-      error,
+    console.error("Error en imagenProducto:", error);
+    return {
+      msg: "No se pudo cargar la imagen del producto",
+      error: error.message,
       statusCode: 500,
-    }
+    };
   }
-}
+};
 /* Servicio imagen producto */
 
 

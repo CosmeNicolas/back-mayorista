@@ -3,24 +3,24 @@ const serviciosProductos = require('../services/producto.servicios')
 
 
 
-const crearProducto = async (req, res)=>{
-  /* validaciones */
+const crearProducto = async (req, res) => {
   try {
-    const errors = validationResult(req)
-    if(!errors.isEmpty()){
-      return res.status(400).json({msg: errors.array()})
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ msg: errors.array() });
     }
-    /* validaciones */
-   const result = await  serviciosProductos.nuevoProducto(req.body)
-    if(result.statusCode === 201){
-      res.status(201).json({msg:result.msg})
-    }else{
-      res.status(500).json({msg:result.msg})
+
+    const result = await serviciosProductos.nuevoProducto(req.body);
+    if (result.statusCode === 201) {
+      res.status(201).json({ msg: result.msg, _id: result._id }); // Devuelve el _id
+    } else {
+      res.status(500).json({ msg: result.msg });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).json({ msg: "Error interno del servidor" });
   }
-}
+};
 
 const mostrarProductos = async (req, res)=>{
   const result = await serviciosProductos.traerProductos()

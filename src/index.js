@@ -43,7 +43,7 @@ const app = express();
 // Middlewares
 app.use(morgan('dev'))
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://tu-frontend.vercel.app'], // Ajusta esto
+ /*  origin: ['http://localhost:3000', 'https://tu-frontend.vercel.app'], */ // Ajusta esto
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'auth']
 }))

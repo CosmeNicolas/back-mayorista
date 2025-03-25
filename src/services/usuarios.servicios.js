@@ -54,9 +54,9 @@ const obtenerUsuarios = async()=>{
   }
 }
 
-const obtenerUnUsuario = async (id)=>{
+const obtenerUnUsuario = async (idUsuario)=>{
   try {
-    const usuario = await UsuarioModel.findById(id)
+    const usuario = await UsuarioModel.findById(idUsuario)
     return{
       msg:'Usuario Encontrado',
       usuario,
@@ -71,9 +71,9 @@ const obtenerUnUsuario = async (id)=>{
   }
 }
 
-const actualizarUsuario = async (id, body) => {
+const actualizarUsuario = async (idUsuario, body) => {
   try {
-    const usuario = await UsuarioModel.findByIdAndUpdate(id, body, { new: true }); // Agrega { new: true }
+    const usuario = await UsuarioModel.findByIdAndUpdate(idUsuario, body, { new: true }); // Agrega { new: true }
     if (!usuario) {
       return {
         msg: "Usuario no encontrado",
@@ -94,9 +94,9 @@ const actualizarUsuario = async (id, body) => {
   }
 };
 
-const eliminarUsuario = async (id) => {
+const eliminarUsuario = async (idUsuario) => {
   try {
-    await UsuarioModel.findByIdAndDelete(id);
+    await UsuarioModel.findByIdAndDelete(idUsuario);
     return {
       msg: "Usuario Eliminado",
       statusCode: 200,

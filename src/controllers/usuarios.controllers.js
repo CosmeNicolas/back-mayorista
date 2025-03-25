@@ -30,7 +30,7 @@ const traerTodosLosUsuarios = async (req,res)=>{
 }
 
 const traerUnUsuario = async(req, res)=>{
-  const result = await servicioUsuarios.obtenerUnUsuario(req.params.id)
+  const result = await servicioUsuarios.obtenerUnUsuario(req.params.idUsuario)
   if(result.statusCode === 200){
     res.status(200).json({usuario: result.usuario, msg: result.msg})
   }else{
@@ -39,7 +39,7 @@ const traerUnUsuario = async(req, res)=>{
 }
 
 const actualizarUnUsuario =async(req, res)=>{
-  const result  = await servicioUsuarios.actualizarUsuario(req.params.id, req.body)
+  const result  = await servicioUsuarios.actualizarUsuario(req.params.idUsuario, req.body)
   const usuarioActualizado =  result
   if(usuarioActualizado.statusCode === 200){
     res.status(200).json({msg: result.msg})
@@ -49,7 +49,7 @@ const actualizarUnUsuario =async(req, res)=>{
 }
 
 const eliminarUnUsuario =async (req, res)=>{
-  const result = await servicioUsuarios.eliminarUsuario(req.params.id)
+  const result = await servicioUsuarios.eliminarUsuario(req.params.idUsuario)
   if(result.statusCode === 200){
     res.status(200).json({msg: result.msg})
   }else{

@@ -31,29 +31,35 @@ app.listen(3001, () => {
 }); */
 
 
-require('dotenv').config()
-require('./DB/config')
+require('dotenv').config();
+require('./DB/config');
 const express = require("express");
-const path = require("path");
-const cors = require('cors')
-const morgan = require('morgan')
+const cors = require('cors');
+const morgan = require('morgan');
 
 const app = express();
 
 // Middlewares
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 app.use(cors({
- /*  origin: ['http://localhost:3000', 'https://tu-frontend.vercel.app'], */ // Ajusta esto
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'auth']
-}))
+}));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public/index.html")));
 
-// Rutas
-app.use('/api', require('./routes/index.routes'))
+// Ruta de prueba
+app.get('/', (req, res) => {
+  res.send('API funcionando correctamente');
+});
 
-// Manejador de errores
+// Rutas API
+app.use('/api', require('./routes/index.routes'));
+
+// Manejo de errores
+app.use((req, res) => {
+  res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Error interno del servidor' });

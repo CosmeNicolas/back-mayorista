@@ -48,7 +48,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'auth']
 }))
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../public/index.html")));
 
 // Rutas
 app.use('/api', require('./routes/index.routes'))

@@ -26,10 +26,10 @@ router.post('/login',
     check('password', 'Min: 8 y Max: 40').isLength({min:8,max:40})
   ],inicioSesion)
 router.get('/',auth('admin'), traerTodosLosUsuarios)
-router.get('/:idUsuario',/* auth('admin'), */ traerUnUsuario)
+router.get('/:idUsuario',auth('admin'), traerUnUsuario)
 router.put('/:idUsuario',auth('admin'), actualizarUnUsuario)
-router.put('/habilitar/:idUsuario',/* auth('admin'), */habilitarUnUsuario)
-router.put('/deshabilitar/:idUsuario',/* auth('admin'), */deshabilitarUnUsuario)
+router.put('/habilitar/:idUsuario',auth('admin'),habilitarUnUsuario)
+router.put('/deshabilitar/:idUsuario',auth('admin'),deshabilitarUnUsuario)
 router.delete('/:idUsuario',auth('admin'),eliminarUnUsuario)
 
 module.exports = router

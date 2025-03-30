@@ -15,9 +15,8 @@ router.post(
     ).isLength({ min: 5 }),
     check("password", "Campo PASSWORD VACIO").not().isEmpty(),
     check("password", "Min: 8 y Max: 40").isLength({ min: 8, max: 40 }),
-  ],
-  crearUsuario
-);
+  ],crearUsuario);
+
 router.post('/login',
   [check('nombreUsuario', "El campo no debe estar vacio").not().isEmpty(),
     /* chequeamos longitud */

@@ -3,34 +3,39 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {registroUsuario} = require('../helpers/messages')
 
-const nuevoUsuario = async (body)=>{
-  /* bcrypt */
+const nuevoUsuario = async (body) => {
   try {
-    /* chequer que el usuario este disponible */
-   const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
-   if(usuarioExiste){
-    return {
-      msg: 'Usuario no Disponible',
-      statusCode: 409
+    const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
+    if(usuarioExiste){
+      return {
+        msg: 'Usuario no Disponible',
+        statusCode: 409
+      }
     }
-   }
-    const usuario = new UsuarioModel(body)
-    /*Antes de crearlo y guardarlo , tenemos q hacer el hasheado  */
-    const salt =  bcrypt.genSaltSync(10);
-    usuario.password = bcrypt.hashSync(body.password, salt);
-    /* hasheado de contraseña */
 
-    registroUsuario(body.correo)
-    await usuario.save()
+    const usuario = new UsuarioModel(body)
+    const salt = bcrypt.genSaltSync(10);
+    usuario.password = bcrypt.hashSync(body.password, salt);
+
+    await usuario.save();
+    
+    // Modificado para devolver el usuario creado
     return {
-      msg:'Usuario Creado',
-      statusCode: 201
+      msg: 'Usuario Creado',
+      statusCode: 201,
+      usuario: {
+        id: usuario._id,
+        nombreUsuario: usuario.nombreUsuario,
+        correo: usuario.correo,
+        rol: usuario.rol
+      }
     }
   } catch (error) {
+    console.error("Error en servicio:", error);
     return {
       msg: 'Error al crear el Usuario',
       statusCode: 500,
-      error
+      error: error.message // Solo el mensaje para no exponer detalles internos
     }
   }
 }

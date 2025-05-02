@@ -63,21 +63,29 @@ const eliminarUnUsuario =async (req, res)=>{
 }
 
 
-const inicioSesion = async (req, res)=>{
-   /* validaciones */
-   const errors = validationResult(req)
-   if(!errors.isEmpty()){
-     return res.status(400).json({msg: errors.array()})
-   }
-   /* validaciones */
-  const result = await servicioUsuarios.inicioSesion(req.body) 
-
-  if(result.statusCode === 200){
-    res.status(200).json({msg: result.msg, rol: result.rol, token: result.token, idUsuario: result.idUsuario})
-  }else{
-    res.status(400).json({msg: result.msg})
+const inicioSesion = async (req, res) => {
+  /* validaciones */
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ msg: errors.array() });
   }
-}
+  /* validaciones */
+  const result = await servicioUsuarios.inicioSesion(req.body);
+
+  if (result.statusCode === 200) {
+    res
+      .status(200)
+      .json({
+        msg: result.msg,
+        rol: result.rol,
+        token: result.token,
+        idUsuario: result.idUsuario,
+        nombreUsuario: result.nombreUsuario,
+      }); // Modificado aquí
+  } else {
+    res.status(400).json({ msg: result.msg });
+  }
+};
 
 const habilitarUnUsuario = async (req, res)=>{
   const result = await servicioUsuarios.habilitarUsuario(req.params.idUsuario)

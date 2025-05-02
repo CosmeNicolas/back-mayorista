@@ -117,39 +117,39 @@ const eliminarUsuario = async (idUsuario) => {
 
 
 /* CREO el inicio de Sesion - JWT */
-const inicioSesion = async (body) =>{
+const inicioSesion = async (body) => {
   try {
-    const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
-    if(!usuarioExiste){
+    const usuarioExiste = await UsuarioModel.findOne({ nombreUsuario: body.nombreUsuario });
+    if (!usuarioExiste) {
       return {
-        msg:'Usuario o Contraseña incorrecto USUARIO',
-        nombreUsuario: usuarioExiste.nombreUsuario,
+        msg: 'Usuario o Contraseña incorrecto USUARIO',
         statusCode: 400
-      }
+      };
     }
-    /* comparacion */
-    const checkPassword = bcrypt.compareSync(body.password, usuarioExiste.password)
-    if(!checkPassword){
+
+    const checkPassword = bcrypt.compareSync(body.password, usuarioExiste.password);
+    if (!checkPassword) {
       return {
-        msg:'Usuario o Contraseña incorrecto PASSWORD',
+        msg: 'Usuario o Contraseña incorrecto PASSWORD',
         statusCode: 400
-      }
+      };
     }
-    /* CREAMOS EL PAULOAD */
+
     const payload = {
-      idUsuario : usuarioExiste._id,
+      idUsuario: usuarioExiste._id,
       rol: usuarioExiste.rol
-    }
-    /* cREO EL TOKEN -  JWT*/
-    const token = jwt.sign(payload, process.env.JWT_SECRET)
-    return{
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+
+    return {
       token,
       rol: usuarioExiste.rol,
       idUsuario: usuarioExiste._id,
-      msg:'Usuario Logueado',
+      nombreUsuario: usuarioExiste.nombreUsuario, // ✅ Este campo es el que faltaba
+      msg: 'Usuario Logueado',
       statusCode: 200
-    }
-  /*token , header - payload - signature*/
+    };
   } catch (error) {
     return {
       msg: 'Error interno del servidor',
@@ -157,8 +157,8 @@ const inicioSesion = async (body) =>{
       error
     };
   }
-  
-}
+};
+
 
 const habilitarUsuario = async(idUsuario)=>{
   const usuario =  await UsuarioModel.findById(idUsuario)

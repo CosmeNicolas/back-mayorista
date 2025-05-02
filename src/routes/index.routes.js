@@ -9,5 +9,10 @@ router.use('/pagos', require('./pagos.routes')); // Esta es la importante
 router.get('/test', (req, res) => {
   res.json({ message: "Ruta de pagos funciona!" });
 });
+router.use('/contacto', require('./contacto.routes'));
+router.get('/test', (req, res) => {
+  res.json({ message: "Ruta principal funcionando" });
+});
+
 
 module.exports = router;

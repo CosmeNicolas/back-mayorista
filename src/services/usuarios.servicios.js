@@ -123,6 +123,7 @@ const inicioSesion = async (body) =>{
     if(!usuarioExiste){
       return {
         msg:'Usuario o Contraseña incorrecto USUARIO',
+        nombreUsuario: usuarioExiste.nombreUsuario,
         statusCode: 400
       }
     }

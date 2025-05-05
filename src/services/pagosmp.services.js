@@ -21,10 +21,17 @@ const crearPreferencia = async (items, compradorId) => {
       binary_mode: true
     };
 
+    // Log de depuración
+    console.log("🧾 Preferencia a enviar:", JSON.stringify(preference, null, 2));
+
     const response = await mercadopago.create({ body: preference });
+
+    // Log de respuesta
+    console.log("✅ Preferencia creada:", response);
+
     return response;
   } catch (error) {
-    console.error('Error al crear preferencia:', error);
+    console.error('❌ Error al crear preferencia:', error.response?.message || error.message);
     throw error;
   }
 };
